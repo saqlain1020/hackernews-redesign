@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { auth, serverTimestamp } from "../lib/firebase";
 import { firestore } from "./../lib/firebase";
+import firebase from "firebase";
 
 const item = {
   hidden: { y: 10, opacity: 0 },
@@ -39,6 +40,10 @@ const SubmitComment = ({ postId, parentId = "", getComment }) => {
           .collection("comments")
           .doc(parentId)
           .update({ hasReplies: true });
+      await firestore
+        .collection("posts")
+        .doc(postId)
+        .update({ comment_count: firebase.firestore.FieldValue.increment(1) });
       obj.id = query.id;
       obj.createdAt = { toDate: () => new Date() };
       console.log(obj);

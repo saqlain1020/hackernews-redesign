@@ -49,7 +49,6 @@ export default function Comment({ comment: initialComment }) {
   };
 
   const newComment = (value) => {
-    console.log(value);
     if (showReplies) setReplies([value, ...replies]);
     setComment({ ...comment, hasReplies: true });
   };
