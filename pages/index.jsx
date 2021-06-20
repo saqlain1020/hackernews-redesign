@@ -3,8 +3,6 @@ import Head from "next/head";
 import getStories from "../lib/getStories";
 import Page from "../components/Page";
 
-var lastVisible = null;
-
 // export async function getStaticProps() {
 //   const query = await getStories("frontstories", lastVisible);
 //   lastVisible = query.docs[query.docs.length - 1] || null;
@@ -22,11 +20,12 @@ var lastVisible = null;
 export default function Home() {
   const [stories, setStories] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [last, setLast] = React.useState(null);
   const getData = async () => {
     setLoading(true);
-    const query = await getStories("top", lastVisible);
+    const query = await getStories("top", last);
     let posts = [];
-    lastVisible = query.docs[query.docs.length - 1] || lastVisible;
+    setLast(query.docs[query.docs.length - 1] || last);
     query.forEach((doc) => {
       let obj = doc.data();
       obj.id = doc.id;
@@ -36,6 +35,8 @@ export default function Home() {
     setStories([...stories, ...posts]);
     setLoading(false);
   };
+
+  React.useEffect(getData, []);
 
   return (
     <>

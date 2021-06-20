@@ -3,7 +3,7 @@ import Link from "next/link";
 import site from "../site.config";
 import useOnClickOutside from "use-onclickoutside";
 
-function Sidebar({ closeMenu }) {
+function Sidebar({ closeMenu, uid }) {
   const ref = React.useRef(null);
   useOnClickOutside(ref, closeMenu);
 
@@ -23,7 +23,29 @@ function Sidebar({ closeMenu }) {
                   </a>
                 </Link>
               </li>
-            ))}
+            ))}{" "}
+            {uid && (
+              <Link
+                href={"#"}
+                onClick={() => {
+                  auth.signOut();
+                }}
+              >
+                <a
+                  className="sidemenu-item"
+                  onClick={() => {
+                    auth.signOut();
+                  }}
+                >
+                  Signout
+                </a>
+              </Link>
+            )}
+            {!uid && (
+              <Link href={"/signin"}>
+                <a className="sidemenu-item">Sign In</a>
+              </Link>
+            )}
           </ul>
         </div>
       </div>

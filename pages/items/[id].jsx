@@ -18,7 +18,7 @@ export default function Best() {
     url = new URL(url);
     return url.hostname;
   };
-
+console.log(data)
   return (
     <div className="container grid justify-center my-10">
       {!isPending ? (

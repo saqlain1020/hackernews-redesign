@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import site from "../site.config";
+import { auth } from "../lib/firebase";
 
-function Sidebar() {
+function Sidebar({ uid }) {
   return (
     <div className="hidden lg:flex flex-col items-center">
       <div className="fixed h-full flex z-10">
@@ -17,6 +18,28 @@ function Sidebar() {
                 </Link>
               </li>
             ))}
+            {uid && (
+              <Link
+                href="#"
+                onClick={() => {
+                  auth.signOut();
+                }}
+              >
+                <a
+                  className="sidemenu-item"
+                  onClick={() => {
+                    auth.signOut();
+                  }}
+                >
+                  Signout
+                </a>
+              </Link>
+            )}
+            {!uid && (
+              <Link href={"/signin"}>
+                <a className="sidemenu-item">Sign In</a>
+              </Link>
+            )}
           </ul>
         </div>
       </div>
