@@ -26,7 +26,7 @@ export default function Story({ story }) {
             </p>
             <p className="text-xs text-gray-600 mr-4"> {story.time}</p>
             <p className="text-xs hidden lg:inline-block text-gray-600 mr-4">
-              {getHost(story.source, story.id)}
+             {story.source}
             </p>
             <figure className="flex items-start mr-4">
               <ChatIcon />

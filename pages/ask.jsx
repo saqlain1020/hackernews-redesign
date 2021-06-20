@@ -4,7 +4,16 @@ import getStories from "../lib/getStories";
 import Page from "../components/Page";
 
 export async function getStaticProps() {
-  const posts = await getStories("askstories");
+  const query = await getStories("askstories", lastVisible);
+  lastVisible = query.docs[query.docs.length - 1] || null;
+  let posts = [];
+  query.forEach((doc) => {
+    let obj = doc.data();
+    obj.id = doc.id;
+    obj.createdAt = new Date(obj.createdAt.toDate()).toDateString();
+    posts.push(obj);
+  });
+  console.log(posts)
   return { props: { posts } };
 }
 

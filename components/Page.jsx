@@ -20,16 +20,7 @@ const item = {
   },
 };
 
-export default function Show({ initialData, page, category }) {
-  const { data: stories, isPending } = useFetched(
-    `api/${category}?page=${page}`,
-    initialData
-  );
-
-  if (isPending) {
-    return <h1>Loading...</h1>;
-  }
-
+export default function Show({ stories, category }) {
   return (
     <div className="mt-4">
       <motion.div
@@ -38,6 +29,7 @@ export default function Show({ initialData, page, category }) {
         animate="show"
         variants={list}
       >
+        {console.log(stories)}
         {stories.map((story, i) => (
           <motion.div variants={item}>
             <Story story={story} key={i} />

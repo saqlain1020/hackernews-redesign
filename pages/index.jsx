@@ -1,46 +1,55 @@
-import { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import getStories from "../lib/getStories";
 import Page from "../components/Page";
 
-export async function getStaticProps() {
-  const posts = await getStories("frontstories");
-  return { props: { posts } };
-}
+var lastVisible = null;
 
-export default function Home({ posts }) {
-  const [pageCount, setpageCount] = useState(1);
-  const pages = [];
+// export async function getStaticProps() {
+//   const query = await getStories("frontstories", lastVisible);
+//   lastVisible = query.docs[query.docs.length - 1] || null;
+//   let posts = [];
+//   query.forEach((doc) => {
+//     let obj = doc.data();
+//     obj.id = doc.id;
+//     obj.createdAt = new Date(obj.createdAt.toDate()).toDateString();
+//     posts.push(obj);
+//   });
+//   console.log(posts);
+//   return { props: { posts } };
+// }
 
-  for (let i = 0; i < pageCount; i++) {
-    pages.push(
-      <Page
-        page={i + 1}
-        category="frontstories"
-        initialData={i + 1 !== 1 ? null : posts}
-        key={i}
-      />
-    );
-  }
+export default function Home() {
+  const [stories, setStories] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const getData = async () => {
+    setLoading(true);
+    const query = await getStories("top", lastVisible);
+    let posts = [];
+    lastVisible = query.docs[query.docs.length - 1] || lastVisible;
+    query.forEach((doc) => {
+      let obj = doc.data();
+      obj.id = doc.id;
+      obj.createdAt = new Date(obj.createdAt.toDate()).toDateString();
+      posts.push(obj);
+    });
+    setStories([...stories, ...posts]);
+    setLoading(false);
+  };
 
   return (
     <>
       <Head>
         <title>Hackernews Redesign - A HN client built on top of Next.js</title>
-        <meta
-          property="og:image"
-          content="/hn-redesign.png"
-        />
+        <meta property="og:image" content="/hn-redesign.png" />
       </Head>
       <div className="lg:col-span-2 mt-8">
         <span className="main-title flex items-center text-soft-black">
           <h1 className="fancy-undeline">Top stories</h1>
         </span>
-        {pages}
-        <button
-          className="more-btn"
-          onClick={() => setpageCount(pageCount + 1)}
-        >
+        <Page category="frontstories" stories={stories || []} />
+        {loading && <h1>Loading...</h1>}
+        <button className="more-btn" onClick={getData}>
           Load more
         </button>
       </div>
