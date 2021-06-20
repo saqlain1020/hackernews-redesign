@@ -25,14 +25,16 @@ export default function Best() {
 
       let queryComments = await firestore
         .collection("comments")
-        .where("postId", "==", post.id)
+        .where("postId", "==", post.id).where("parentId","==","")
         .get();
       let allComments = [];
+      console.log(queryComments.docs.length)
       queryComments.forEach((doc) => {
         let obj = doc.data();
         obj.id = doc.id;
         allComments.push(obj);
       });
+      setComments(allComments)
       setPost(post);
     } catch (error) {
       console.log(error.message);
@@ -83,7 +85,7 @@ export default function Best() {
                 {post.description}
               </p>
           </div>
-          <Comments comments={comments} />
+          <Comments postId={id} comments={comments} />
         </div>
       ) : (
         "Loading..."
