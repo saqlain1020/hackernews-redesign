@@ -1,3 +1,4 @@
+import React from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import useFetched from "../../lib/useFetched";
@@ -7,57 +8,82 @@ import GlobeIcon from "../../components/icons/globe";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 // import getComments from "../../lib/getComments";
+import { firestore } from "./../../lib/firebase";
 
 export default function Best() {
   const { id } = useRouter().query;
-  const { data, isPending } = useFetched(`/api/comments/${id}`);
-  dayjs.extend(localizedFormat);
+  const [post, setPost] = React.useState({});
+  const [comments, setComments] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
-  const getHost = (url, id) => {
-    url = !url ? `https://news.ycombinator.com/item?id=${id}` : url;
-    url = new URL(url);
-    return url.hostname;
+  const getData = async () => {
+    setLoading(true);
+    try {
+      let querySnapshot = await firestore.collection("posts").doc(id).get();
+      let post = querySnapshot.data();
+      post.id = querySnapshot.id;
+
+      let queryComments = await firestore
+        .collection("comments")
+        .where("postId", "==", post.id)
+        .get();
+      let allComments = [];
+      queryComments.forEach((doc) => {
+        let obj = doc.data();
+        obj.id = doc.id;
+        allComments.push(obj);
+      });
+      setPost(post);
+    } catch (error) {
+      console.log(error.message);
+    }
+    setLoading(false);
   };
-console.log(data)
+
+  dayjs.extend(localizedFormat);
+  React.useEffect(() => {
+    getData();
+  }, [id]);
   return (
     <div className="container grid justify-center my-10">
-      {!isPending ? (
+      {!loading ? (
         <div className="w-full lg:w-140">
           <Head>
-            <title>Hackernews Redesign - {data.title}</title>
+            <title>Hackernews Redesign - {post.title || ""}</title>
           </Head>
           <div>
             <a
               className="font-extrabold text-xl fancy-undeline"
-              href={
-                !data.url
-                  ? `https://news.ycombinator.com/item?id=${data.id}`
-                  : data.url
-              }
+              href={"#"}
               target="_blank"
             >
-              {data.title}
+              {post.title || ""}
             </a>
             <div className="flex mt-2">
               <p className="text-xs mr-4 text-gray-500">
                 by{" "}
-                <span className="text-red-500 font-medium">{data.author}</span>
+                <span className="text-red-500 font-medium">
+                  {post.user || ""}
+                </span>
               </p>
               <p className="text-xs text-gray-500 mr-4">
-                {dayjs(data.created_at).format("MMM D, h:mm A")}
+                {dayjs(post.createdAt?.toDate()).format("MMM D, h:mm A")}
               </p>
               <p className="text-xs text-gray-500 mr-4 flex items-start">
-                <GlobeIcon /> {getHost(data.url)}
+                <GlobeIcon /> {post.source || ""}
               </p>
               <figure className="flex items-start">
                 <ChatIcon />
                 <figcaption className="text-xs text-gray-500">
-                  {data.comment_count}
+                  {post.comment_count || ""}
                 </figcaption>
               </figure>
             </div>
+              <p className="text-md text-gray-700 mr-4" style={{marginTop:20}}>
+                {post.description}
+              </p>
           </div>
-          <Comments comments={data.children} />
+          <Comments comments={comments} />
         </div>
       ) : (
         "Loading..."
