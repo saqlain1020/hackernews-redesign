@@ -29,7 +29,7 @@ export default function Home() {
     query.forEach((doc) => {
       let obj = doc.data();
       obj.id = doc.id;
-      obj.createdAt = new Date(obj.createdAt.toDate()).toDateString();
+      obj.createdAt = new Date(obj?.createdAt?.toDate()).toDateString();
       posts.push(obj);
     });
     setStories([...stories, ...posts]);

@@ -69,7 +69,7 @@ export default function Best() {
                 </span>
               </p>
               <p className="text-xs text-gray-500 mr-4">
-                {dayjs(post.createdAt?.toDate()).format("MMM D, h:mm A")}
+                {dayjs(post?.createdAt?.toDate()).format("MMM D, h:mm A")}
               </p>
               <p className="text-xs text-gray-500 mr-4 flex items-start">
                 <GlobeIcon /> {post.source || ""}

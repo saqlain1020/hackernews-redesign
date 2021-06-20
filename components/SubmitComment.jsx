@@ -13,7 +13,7 @@ const item = {
     },
   },
 };
-const SubmitComment = ({ postId, parentId = "" }) => {
+const SubmitComment = ({ postId, parentId = "", getComment }) => {
   const [comment, setComment] = React.useState("");
 
   const handleSubmit = async () => {
@@ -40,7 +40,9 @@ const SubmitComment = ({ postId, parentId = "" }) => {
           .doc(parentId)
           .update({ hasReplies: true });
       obj.id = query.id;
+      obj.createdAt = { toDate: () => new Date() };
       console.log(obj);
+      getComment(obj);
       setComment("");
     } catch (error) {
       console.log(error.message);

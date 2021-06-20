@@ -2,6 +2,7 @@ import React from "react";
 import Comment from "./Comment";
 import { motion } from "framer-motion";
 import SubmitComment from "./SubmitComment";
+import { v4 as uuid } from "uuid";
 
 const list = {
   hidden: { opacity: 0 },
@@ -51,7 +52,11 @@ const dummyComments = [
     parentId: 5,
   },
 ];
-export default function Comments({ comments, postId }) {
+export default function Comments({ comments: initialComments, postId }) {
+  const [comments, setComments] = React.useState(initialComments);
+  React.useEffect(() => {
+    setComments(initialComments);
+  }, [initialComments]);
   const shapeComments = () => {
     let parentComments = dummyComments.filter((item) => !item.parentId);
     parentComments.forEach((item) => {
@@ -81,9 +86,13 @@ export default function Comments({ comments, postId }) {
       variants={list}
     >
       {comments.map((comment, i) => (
-        <Comment comment={comment} key={i} />
+        <Comment key={uuid()} comment={comment} key={i} />
       ))}
-      <SubmitComment postId={postId} parentId=""/>
+      <SubmitComment
+        getComment={(v) => setComments([...comments, v])}
+        postId={postId}
+        parentId=""
+      />
     </motion.ul>
   );
 }

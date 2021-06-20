@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { firestore } from "./../lib/firebase";
 import CommentIco from "./icons/newspaper";
 import SubmitComment from "./SubmitComment";
+import { v4 as uuid } from "uuid";
 
 const item = {
   hidden: { y: 10, opacity: 0 },
@@ -17,10 +18,16 @@ const item = {
   },
 };
 
-export default function Comment({ comment }) {
+export default function Comment({ comment: initialComment }) {
+  const [comment, setComment] = React.useState(initialComment);
   const [showReplies, setShowReplies] = React.useState(false);
   const [replies, setReplies] = React.useState([]);
   const [openComment, setOpenComment] = React.useState(false);
+
+  React.useEffect(() => {
+    setComment(initialComment);
+  }, [initialComment]);
+
   const getReplies = async () => {
     try {
       let querySnapshot = await firestore
@@ -34,11 +41,17 @@ export default function Comment({ comment }) {
         obj.id = doc.id;
         allComments.push(obj);
       });
-      setReplies(allComments);
+      setReplies([...replies, ...allComments]);
       setShowReplies(true);
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  const newComment = (value) => {
+    console.log(value);
+    if (showReplies) setReplies([value, ...replies]);
+    setComment({ ...comment, hasReplies: true });
   };
 
   return (
@@ -55,33 +68,48 @@ export default function Comment({ comment }) {
         className="comments-paragraph"
         dangerouslySetInnerHTML={{ __html: comment.comment }}
       ></p>
-      {comment.hasReplies &&
-        !showReplies &&(
-          <button
-            className="flex items-center text-xs underline mt-2 text-gray-600"
-            onClick={getReplies}
-          >
-            <ReplyIcon /> <span>replies...</span>
-          </button>
-        )}
+      {comment.hasReplies && !showReplies && (
+        <button
+          className="flex items-center text-xs underline mt-2 text-gray-600"
+          onClick={getReplies}
+        >
+          <ReplyIcon /> <span>replies...</span>
+        </button>
+      )}
       {!openComment && (
         <button
           className="flex items-center text-xs underline mt-2 text-gray-600"
           onClick={() => setOpenComment(true)}
         >
-         <span>Comment</span>
+          <span>Comment</span>
+        </button>
+      )}
+      {openComment && (
+        <button
+          className="flex items-center text-xs underline mt-2 text-gray-600"
+          onClick={() => setOpenComment(false)}
+        >
+          <span>Hide Comment</span>
         </button>
       )}
 
       {showReplies && (
         <div className="pl-4 border-l-2 border-gray-400">
           {replies.map((reply) => (
-            <Comment comment={reply} />
+            <Comment key={uuid()} comment={reply} />
           ))}
         </div>
       )}
+
       {openComment && (
-        <SubmitComment parentId={comment.id} postId={comment.postId} />
+        <>
+          <br />
+          <SubmitComment
+            parentId={comment.id}
+            postId={comment.postId}
+            getComment={(v) => newComment(v)}
+          />
+        </>
       )}
     </motion.li>
   );
