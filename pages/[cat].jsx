@@ -3,9 +3,10 @@ import Head from "next/head";
 import Page from "../components/Page";
 import { connect } from "react-redux";
 import { fetchMoreStories } from "../redux/posts/postsActions";
+import { useRouter } from 'next/router';
 
 const Home = ({ fetchMoreStories, loading }) => {
-  const category = "";
+  const { cat } = useRouter().query;
   return (
     <>
       <Head>
@@ -16,9 +17,9 @@ const Home = ({ fetchMoreStories, loading }) => {
         <span className="main-title flex items-center text-soft-black">
           <h1 className="fancy-undeline">Top stories</h1>
         </span>
-        <Page category={category} />
+        <Page category={cat} />
         {loading && <h1>Loading...</h1>}
-        <button className="more-btn" onClick={() => fetchMoreStories(category)}>
+        <button className="more-btn" onClick={() => fetchMoreStories(cat)}>
           Load more
         </button>
       </div>

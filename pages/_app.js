@@ -10,6 +10,8 @@ import Footer from "../components/Footer";
 import { AnimatePresence } from "framer-motion";
 import CoffeeCup from "../components/icons/coffeecup";
 import { auth } from "../lib/firebase";
+import { Provider } from "react-redux";
+import store from "../redux/store";
 
 function MyApp({ Component, pageProps }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,6 +45,8 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
+    <Provider store={store}>
+
     <div className="relative flex flex-col">
       <div className="bg-overlay" />
       <div className="relative flex flex-col mx-6 lg:mx-0 min-h-screen">
@@ -51,7 +55,7 @@ function MyApp({ Component, pageProps }) {
           <Sidebar uid={uid} />
           {isMenuOpen && (
             <SidebarMobile uid={uid} closeMenu={() => setIsMenuOpen(false)} />
-          )}
+            )}
           <AnimatePresence exitBeforeEnter>
             <Component {...pageProps} />
           </AnimatePresence>
@@ -61,11 +65,12 @@ function MyApp({ Component, pageProps }) {
           href="https://www.buymeacoffee.com/rocktimcodes"
           target="_blank"
           className="fixed left-5 bottom-6"
-        >
+          >
           <CoffeeCup />
         </a>
       </div>
     </div>
+          </Provider>
   );
 }
 

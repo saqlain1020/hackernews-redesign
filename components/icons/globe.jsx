@@ -1,6 +1,6 @@
 import React from "react";
 
-function Icon() {
+function Icon({ style }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,6 +8,7 @@ function Icon() {
       stroke="currentColor"
       className="w-4 h-4 inline-block mr-1 text-gray-500"
       viewBox="0 0 24 24"
+      style={style}
     >
       <path
         strokeLinecap="round"

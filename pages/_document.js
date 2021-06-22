@@ -1,5 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import { Provider } from "react-redux";
 import { GA_TRACKING_ID } from "../lib/gtag";
+import store from "../redux/store";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
