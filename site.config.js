@@ -14,7 +14,8 @@ const site = {
     { title: "Ask", href: "/ask", icon: <BubbleIcon /> },
     { title: "Show", href: "/show", icon: <SparklesIcon /> },
     { title: "Job", href: "/job", icon: <BriefcaseIcon /> },
-    { title: "Add Post", href: "/add", icon: <Ico /> },
+    { title: "Add Post", href: "/add", icon: null },
+    { title: "Add Subreddit", href: "/add", icon: null },
   ],
 };
 

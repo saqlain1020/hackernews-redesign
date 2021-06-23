@@ -1,15 +1,12 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import useFetched from "../../lib/useFetched";
 import Comments from "../../components/Comments";
 import ChatIcon from "../../components/icons/chat";
 import GlobeIcon from "../../components/icons/globe";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { firestore } from "../api/firebase";
 import { fetchPostData } from "../api/posts";
-// import getComments from "../../lib/getComments";
 
 export default function Best() {
   const { id } = useRouter().query;
@@ -61,7 +58,7 @@ export default function Best() {
                 {dayjs(post?.createdAt?.toDate()).format("MMM D, h:mm A")}
               </p>
               <p className="text-xs text-gray-500 mr-4 flex items-start">
-                <GlobeIcon /> {post.source || ""}
+                <GlobeIcon /> {post.subredditName || ""}
               </p>
               <figure className="flex items-start">
                 <ChatIcon />

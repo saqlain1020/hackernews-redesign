@@ -1,4 +1,5 @@
 import React from "react";
+import { signup } from "./api/auth";
 import { auth } from "./api/firebase";
 
 const register = () => {
@@ -11,16 +12,7 @@ const register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let {
-        user: { uid },
-      } = await auth.createUserWithEmailAndPassword(
-        state.email,
-        state.password
-      );
-      await auth.currentUser.updateProfile({
-        displayName: state.name,
-      });
-      window.location = "/";
+      await signup(state.name, state.email, state.password);
     } catch (err) {
       alert(err.message);
     }

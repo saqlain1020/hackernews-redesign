@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "./api/firebase";
+import { login } from "./api/auth";
 
 const signin = () => {
   const [state, setState] = React.useState({
@@ -10,8 +10,7 @@ const signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await auth.signInWithEmailAndPassword(state.email, state.password);
-      window.location = "/"
+      await login(state.email, state.password);
     } catch (err) {
       alert(err.message);
     }

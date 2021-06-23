@@ -1,4 +1,5 @@
-import { auth, firestore } from "./firebase";
+import { auth, firestore, serverTimestamp } from "./firebase";
+import  firebase  from './firebase';
 
 export const fetchReplies = async (postId, parentId) => {
   try {

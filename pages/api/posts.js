@@ -1,8 +1,9 @@
-import { firestore } from "./firebase";
+import { useAppContext } from "./AppContext";
+import { auth, firestore, serverTimestamp } from "./firebase";
 
-export const getStoriesQuery = (category, lastVisibe) => {
+export const getStoriesQuery = (subreddit, lastVisibe) => {
   let query = firestore.collection("posts");
-  if (category) query = query.where("category", "==", category);
+  if (subreddit) query = query.where("subreddit", "==", subreddit);
   query = query.orderBy("createdAt", "desc");
   if (lastVisibe) {
     query = query.startAfter(lastVisibe);
@@ -10,10 +11,10 @@ export const getStoriesQuery = (category, lastVisibe) => {
   return query.limit(5).get();
 };
 
-export const fetchStories = async (category, lastVisible) => {
+export const fetchStories = async (subreddit, lastVisible) => {
   try {
     let querySnapshot = await getStoriesQuery(
-      category,
+      subreddit,
       lastVisible ? lastVisible : null
     );
     let lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -54,6 +55,26 @@ export const fetchPostData = async (postId) => {
       comments: allComments,
       post,
     };
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const submitPost = async (data,context) => {
+  try {
+    if (!auth.currentUser) {
+      alert("You need to login first...");
+      return;
+    }
+    let obj = {
+      ...data,
+      createdAt: serverTimestamp,
+      authorId: auth.currentUser.uid,
+      user: auth.currentUser.displayName,
+      comment_count: 0,
+    };
+    await firestore.collection("posts").add(obj);
+    alert("Post Successful");
   } catch (error) {
     console.log(error.message);
   }

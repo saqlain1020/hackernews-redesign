@@ -1,36 +1,25 @@
 import React from "react";
 import Head from "next/head";
 
-import { auth, serverTimestamp } from "../api/firebase";
-import { firestore } from "../api/firebase";
+import { submitSubreddit } from "./../api/subreddit";
+import { useAppContext } from "../api/AppContext";
 
 export default function Create(props) {
   const [state, setState] = React.useState({
-    title: "",
+    name: "",
     description: "",
   });
-
+  const context = useAppContext();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!auth.currentUser) {
-        alert("You need to login first...");
-        return;
-      }
-      let obj = {
-        ...state,
-        createdAt: serverTimestamp,
-        authorId: auth.currentUser.uid,
-        user: auth.currentUser.displayName,
-        comment_count: 0,
-      };
-      await firestore.collection("posts").add(obj);
-      alert("Post Successful");
+      let res = await submitSubreddit(state.name, state.description);
+      context.fetchSubreddits();
+      alert("Subreddit created");
+      console.log(res);
       setState({
-        source: "",
-        title: "",
+        name: "",
         description: "",
-        category: "top",
       });
     } catch (error) {
       alert(error.message);
@@ -65,14 +54,14 @@ export default function Create(props) {
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               for="grid-password"
             >
-              Title
+              Name
             </label>
             <input
-              name="title"
-              value={state.title}
+              name="name"
+              value={state.name}
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
-              placeholder="My Story"
+              placeholder="Name"
               required
             />
           </div>
@@ -97,7 +86,7 @@ export default function Create(props) {
             />
           </div>
         </div>
-       
+
         <div class="md:w-2/3">
           <button
             type="submit"
