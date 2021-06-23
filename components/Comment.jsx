@@ -2,10 +2,11 @@ import React from "react";
 import * as timeago from "timeago.js";
 import ReplyIcon from "./icons/reply";
 import { motion } from "framer-motion";
-import { firestore } from "./../lib/firebase";
 import CommentIco from "./icons/newspaper";
 import SubmitComment from "./SubmitComment";
 import { v4 as uuid } from "uuid";
+import { firestore } from "../pages/api/firebase";
+import { fetchReplies } from "../pages/api/comments";
 
 const item = {
   hidden: { y: 10, opacity: 0 },
@@ -30,18 +31,9 @@ export default function Comment({ comment: initialComment }) {
 
   const getReplies = async () => {
     try {
-      let querySnapshot = await firestore
-        .collection("comments")
-        .where("parentId", "==", comment.id)
-        .where("postId", "==", comment.postId)
-        .get();
-      let allComments = [];
-      querySnapshot.forEach((doc) => {
-        let obj = doc.data();
-        obj.id = doc.id;
-        allComments.push(obj);
-      });
-      setReplies([...replies, ...allComments]);
+      let comments = await fetchReplies(comment.postId, comment.id);
+
+      setReplies([...replies, ...comments]);
       setShowReplies(true);
     } catch (error) {
       console.log(error.message);

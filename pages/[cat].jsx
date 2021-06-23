@@ -1,12 +1,35 @@
 import React from "react";
 import Head from "next/head";
 import Page from "../components/Page";
-import { connect } from "react-redux";
-import { fetchMoreStories } from "../redux/posts/postsActions";
-import { useRouter } from 'next/router';
+import { fetchStories } from "./api/posts";
+import { useRouter } from "next/router";
 
-const Home = ({ fetchMoreStories, loading }) => {
-  const { cat } = useRouter().query;
+const Home = () => {
+  const [lastVisible, setLastVisible] = React.useState(null);
+  const [stories, setStories] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const {cat} = useRouter().query;
+
+  const getStories = async () => {
+    setLoading(true);
+    try {
+      let { posts, lastVisible: last } = await fetchStories(cat, lastVisible);
+
+      setStories([...stories, ...posts]);
+      setLastVisible(last);
+    } catch (error) {
+      console.log(error.message);
+    }
+    setLoading(false);
+  };
+
+  React.useEffect(() => {
+    console.log(cat)
+    setLastVisible(null);
+    setStories([]);
+    getStories();
+  }, [cat]);
+
   return (
     <>
       <Head>
@@ -17,9 +40,9 @@ const Home = ({ fetchMoreStories, loading }) => {
         <span className="main-title flex items-center text-soft-black">
           <h1 className="fancy-undeline">Top stories</h1>
         </span>
-        <Page category={cat} />
+        <Page stories={stories} />
         {loading && <h1>Loading...</h1>}
-        <button className="more-btn" onClick={() => fetchMoreStories(cat)}>
+        <button className="more-btn" onClick={getStories}>
           Load more
         </button>
       </div>
@@ -27,12 +50,4 @@ const Home = ({ fetchMoreStories, loading }) => {
   );
 };
 
-const actions = {
-  fetchMoreStories,
-};
-
-const mapState = (store) => ({
-  loading: store.posts.loading,
-});
-
-export default connect(mapState, actions)(Home);
+export default Home;

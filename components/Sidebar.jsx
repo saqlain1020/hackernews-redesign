@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import site from "../site.config";
-import { auth } from "../lib/firebase";
+import { auth } from "../pages/api/firebase";
 
 function Sidebar({ uid }) {
   return (

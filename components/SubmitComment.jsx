@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { auth, serverTimestamp } from "../lib/firebase";
-import { firestore } from "./../lib/firebase";
 import firebase from "firebase";
+import { auth, serverTimestamp, firestore } from "../pages/api/firebase";
+import { postComment } from "../pages/api/comments";
 
 const item = {
   hidden: { y: 10, opacity: 0 },
@@ -19,35 +19,13 @@ const SubmitComment = ({ postId, parentId = "", getComment }) => {
 
   const handleSubmit = async () => {
     try {
-      if (!auth.currentUser) {
-        alert("Must be signed in");
-        return;
-      }
-      if (!comment) return;
-      let { uid, displayName } = auth.currentUser;
       let obj = {
         parentId,
-        postId,
-        hasReplies: false,
         comment,
-        authorId: uid,
-        authorName: displayName,
-        createdAt: serverTimestamp,
+        postId,
       };
-      let query = await firestore.collection("comments").add(obj);
-      if (parentId)
-        await firestore
-          .collection("comments")
-          .doc(parentId)
-          .update({ hasReplies: true });
-      await firestore
-        .collection("posts")
-        .doc(postId)
-        .update({ comment_count: firebase.firestore.FieldValue.increment(1) });
-      obj.id = query.id;
-      obj.createdAt = { toDate: () => new Date() };
-      console.log(obj);
-      getComment(obj);
+      let res = await postComment(obj);
+      getComment(res);
       setComment("");
     } catch (error) {
       console.log(error.message);

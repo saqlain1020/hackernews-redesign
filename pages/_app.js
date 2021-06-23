@@ -9,9 +9,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { AnimatePresence } from "framer-motion";
 import CoffeeCup from "../components/icons/coffeecup";
-import { auth } from "../lib/firebase";
-import { Provider } from "react-redux";
-import store from "../redux/store";
+import { auth } from "./api/firebase";
 
 function MyApp({ Component, pageProps }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,7 +43,7 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
-    <Provider store={store}>
+   
 
     <div className="relative flex flex-col">
       <div className="bg-overlay" />
@@ -70,7 +68,7 @@ function MyApp({ Component, pageProps }) {
         </a>
       </div>
     </div>
-          </Provider>
+         
   );
 }
 

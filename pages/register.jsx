@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "../lib/firebase";
+import { auth } from "./api/firebase";
 
 const register = () => {
   const [state, setState] = React.useState({

@@ -7,8 +7,9 @@ import ChatIcon from "../../components/icons/chat";
 import GlobeIcon from "../../components/icons/globe";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { firestore } from "../api/firebase";
+import { fetchPostData } from "../api/posts";
 // import getComments from "../../lib/getComments";
-import { firestore } from "./../../lib/firebase";
 
 export default function Best() {
   const { id } = useRouter().query;
@@ -19,22 +20,9 @@ export default function Best() {
   const getData = async () => {
     setLoading(true);
     try {
-      let querySnapshot = await firestore.collection("posts").doc(id).get();
-      let post = querySnapshot.data();
-      post.id = querySnapshot.id;
-
-      let queryComments = await firestore
-        .collection("comments")
-        .where("postId", "==", post.id).where("parentId","==","")
-        .get();
-      let allComments = [];
-      console.log(queryComments.docs.length)
-      queryComments.forEach((doc) => {
-        let obj = doc.data();
-        obj.id = doc.id;
-        allComments.push(obj);
-      });
-      setComments(allComments)
+      let { post, comments } = await fetchPostData(id);
+      console.log(post,comments)
+      setComments(comments);
       setPost(post);
     } catch (error) {
       console.log(error.message);
@@ -43,6 +31,7 @@ export default function Best() {
   };
 
   dayjs.extend(localizedFormat);
+
   React.useEffect(() => {
     getData();
   }, [id]);
@@ -81,9 +70,9 @@ export default function Best() {
                 </figcaption>
               </figure>
             </div>
-              <p className="text-md text-gray-700 mr-4" style={{marginTop:20}}>
-                {post.description}
-              </p>
+            <p className="text-md text-gray-700 mr-4" style={{ marginTop: 20 }}>
+              {post.description}
+            </p>
           </div>
           <Comments postId={id} comments={comments} />
         </div>

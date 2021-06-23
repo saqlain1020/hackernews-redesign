@@ -1,8 +1,6 @@
 import React from "react";
 import Story from "./Story";
 import { motion } from "framer-motion";
-import { fetchStories } from "../redux/posts/postsActions";
-import { connect } from "react-redux";
 
 const list = {
   hidden: { opacity: 0 },
@@ -22,12 +20,9 @@ const item = {
   },
 };
 
-const Show = ({ category, posts, fetchStories }) => {
+const Show = ({ stories }) => {
 
-  React.useEffect(() => {
-    fetchStories(category);
-  }, [category]);
-
+  
   return (
     <div className="mt-4">
       <motion.div
@@ -36,7 +31,7 @@ const Show = ({ category, posts, fetchStories }) => {
         animate="show"
         variants={list}
       >
-        {posts.map((story, i) => (
+        {stories.map((story, i) => (
           <motion.div key={i} variants={item}>
             <Story story={story}  />
           </motion.div>
@@ -46,12 +41,5 @@ const Show = ({ category, posts, fetchStories }) => {
   );
 };
 
-const actions = {
-  fetchStories,
-};
 
-const mapState = (store) => ({
-  posts: store.posts.posts,
-});
-
-export default connect(mapState, actions)(Show);
+export default Show;
