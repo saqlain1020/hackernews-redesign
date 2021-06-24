@@ -7,6 +7,7 @@ import BubbleIcon from "./icons/bubble";
 import SparkleIcon from "./icons/sparkles";
 import ZapIcon from "./icons/zap";
 import FireIcon from "./icons/fire";
+import SubredditSelect from "./SubredditSelect";
 
 function Sidebar({ uid }) {
   const context = useAppContext();
@@ -16,14 +17,14 @@ function Sidebar({ uid }) {
       <div className="fixed h-full flex z-10">
         <div className="flex items-center px-8">
           <ul>
-          <li>
+            <li>
               <Link href={`/`}>
                 <a className="sidemenu-item">
                   <FireIcon /> Recent
                 </a>
               </Link>
             </li>
-            {context?.subreddits?.map((item, i) => (
+            {/* {context?.subreddits?.map((item, i) => (
               <li key={i}>
                 <Link href={`/subreddit/${item.id}`}>
                   <a className="sidemenu-item">
@@ -31,7 +32,7 @@ function Sidebar({ uid }) {
                   </a>
                 </Link>
               </li>
-            ))}
+            ))} */}
             <li>
               <Link href={`/add`}>
                 <a className="sidemenu-item">

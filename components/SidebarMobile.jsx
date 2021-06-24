@@ -2,6 +2,9 @@ import React from "react";
 import Link from "next/link";
 import site from "../site.config";
 import useOnClickOutside from "use-onclickoutside";
+import ZapIcon from "./icons/zap";
+import FireIcon from "./icons/fire";
+import SparkleIcon from "./icons/sparkles";
 
 function Sidebar({ closeMenu, uid }) {
   const ref = React.useRef(null);
@@ -15,15 +18,27 @@ function Sidebar({ closeMenu, uid }) {
       >
         <div className="flex items-center px-8">
           <ul>
-            {site.tabs.map((tab, i) => (
-              <li key={i}>
-                <Link href={tab.href}>
-                  <a className="sidemenu-item">
-                    {tab.icon} {tab.title}
-                  </a>
-                </Link>
-              </li>
-            ))}{" "}
+            <li>
+              <Link href={`/`}>
+                <a className="sidemenu-item">
+                  <FireIcon /> Recent
+                </a>
+              </Link>
+            </li>{" "}
+            <li>
+              <Link href={`/add`}>
+                <a className="sidemenu-item">
+                  <ZapIcon /> Add Post
+                </a>
+              </Link>
+            </li>
+            <li>
+              <Link href={`/subreddit/create`}>
+                <a className="sidemenu-item">
+                  <SparkleIcon /> Add Subreddit
+                </a>
+              </Link>
+            </li>
             {uid && (
               <Link
                 href={"#"}

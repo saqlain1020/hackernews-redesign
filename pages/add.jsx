@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { useAppContext } from "./api/AppContext";
 import { submitPost } from "./api/posts";
+import SubredditSelect from "../components/SubredditSelect";
 
 export default function Add(props) {
   let context = useAppContext();

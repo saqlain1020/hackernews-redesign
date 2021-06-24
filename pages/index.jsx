@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Page from "../components/Page";
 import { fetchStories } from "./api/posts";
+import SubredditSelect from "../components/SubredditSelect";
 
 const category = "";
 
@@ -38,6 +39,9 @@ const Home = () => {
         <meta property="og:image" content="/hn-redesign.png" />
       </Head>
       <div className="lg:col-span-2 mt-8">
+        <div style={{ width: 200, marginBottom: 20 }}>
+          <SubredditSelect />
+        </div>
         <span className="main-title flex items-center text-soft-black">
           <h1 className="fancy-undeline">Top stories</h1>
         </span>
