@@ -56,3 +56,16 @@ export const postComment = async ({ parentId, postId, comment }) => {
     console.log(error.message);
   }
 };
+
+export const upvoteComment = async (commentId) =>{
+  try {
+    await firestore.collection("comments").doc(commentId).update({
+      upvotesBy: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid),
+    })
+    alert("Upvoted")
+    return true;
+  } catch (error) {
+    
+    console.log(error.message);
+  }
+}

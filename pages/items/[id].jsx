@@ -44,58 +44,78 @@ export default function Best() {
     getData();
   }, [id]);
   return (
-    <div className="container grid justify-center my-10">
-      {!loading ? (
-        <div className="w-full lg:w-140">
-          <Head>
-            <title>Hackernews Redesign - {post.title || ""}</title>
-          </Head>
-          <div>
-            <a
-              className="font-extrabold text-xl fancy-undeline"
-              href={"#"}
-              target="_blank"
-            >
-              {post.title || ""}
-            </a>
-            <div className="flex mt-2">
-              <p className="text-xs mr-4 text-gray-500">
-                by{" "}
-                <span className="text-red-500 font-medium">
-                  {post.user || ""}
-                </span>
-              </p>
-              <p className="text-xs text-gray-500 mr-4">
-                {dayjs(post?.createdAt?.toDate()).format("MMM D, h:mm A")}
-              </p>
-              <p className="text-xs text-gray-500 mr-4 flex items-start">
-                <GlobeIcon /> {post.subredditName || ""}
-              </p>
-              <figure className="flex items-start">
-                <ChatIcon />
-                <figcaption className="text-xs text-gray-500">
-                  {post.comment_count || ""}
-                </figcaption>
-              </figure>
-              {!upvoted && (
-                <span
-                  className="text-xs text-gray-500"
-                  style={{ display: "flex", cursor: "pointer",marginLeft:10, }}
-                  onClick={upvoteThisPost}
-                >
-                  Upvote
-                </span>
-              )}
-            </div>
-            <p className="text-md text-gray-700 mr-4" style={{ marginTop: 20 }}>
-              {post.description}
-            </p>
-          </div>
-          <Comments postId={id} comments={comments} />
+    <>
+      <div
+        className="container grid justify-center my-10"
+        style={{ display: "flex" }}
+      >
+        <div style={{ marginTop: 50, width: 60 }}>
+          <UpIcon
+            style={{ height: 30, cursor: "pointer" }}
+            onClick={upvoteThisPost}
+          />
+
+          <p className="text-sm text-gray-500" style={{marginLeft:3,}}>{post?.upvotesBy?.length}</p>
         </div>
-      ) : (
-        "Loading..."
-      )}
-    </div>
+        {!loading ? (
+          <div className="w-full lg:w-140">
+            <Head>
+              <title>Hackernews Redesign - {post.title || ""}</title>
+            </Head>
+            <div>
+              <a
+                className="font-extrabold text-xl fancy-undeline"
+                href={"#"}
+                target="_blank"
+              >
+                {post.title || ""}
+              </a>
+              <div className="flex mt-2">
+                <p className="text-xs mr-4 text-gray-500">
+                  by{" "}
+                  <span className="text-red-500 font-medium">
+                    {post.user || ""}
+                  </span>
+                </p>
+                <p className="text-xs text-gray-500 mr-4">
+                  {dayjs(post?.createdAt?.toDate()).format("MMM D, h:mm A")}
+                </p>
+                <p className="text-xs text-gray-500 mr-4 flex items-start">
+                  <GlobeIcon /> {post.subredditName || ""}
+                </p>
+                <figure className="flex items-start">
+                  <ChatIcon />
+                  <figcaption className="text-xs text-gray-500">
+                    {post.comment_count || ""}
+                  </figcaption>
+                </figure>
+                {!upvoted && (
+                  <span
+                    className="text-xs text-gray-500"
+                    style={{
+                      display: "flex",
+                      cursor: "pointer",
+                      marginLeft: 10,
+                    }}
+                    onClick={upvoteThisPost}
+                  >
+                    Upvote
+                  </span>
+                )}
+              </div>
+              <p
+                className="text-md text-gray-700 mr-4"
+                style={{ marginTop: 20 }}
+              >
+                {post.description}
+              </p>
+            </div>
+            <Comments postId={id} comments={comments} />
+          </div>
+        ) : (
+          "Loading..."
+        )}
+      </div>
+    </>
   );
 }
