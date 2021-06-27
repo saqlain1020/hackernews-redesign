@@ -55,7 +55,9 @@ export default function Best() {
             onClick={upvoteThisPost}
           />
 
-          <p className="text-sm text-gray-500" style={{marginLeft:3,}}>{post?.upvotesBy?.length}</p>
+          <p className="text-sm text-gray-500" style={{ marginLeft: 3 }}>
+            {post?.upvotesBy?.length}
+          </p>
         </div>
         {!loading ? (
           <div className="w-full lg:w-140">
@@ -89,19 +91,6 @@ export default function Best() {
                     {post.comment_count || ""}
                   </figcaption>
                 </figure>
-                {!upvoted && (
-                  <span
-                    className="text-xs text-gray-500"
-                    style={{
-                      display: "flex",
-                      cursor: "pointer",
-                      marginLeft: 10,
-                    }}
-                    onClick={upvoteThisPost}
-                  >
-                    Upvote
-                  </span>
-                )}
               </div>
               <p
                 className="text-md text-gray-700 mr-4"
