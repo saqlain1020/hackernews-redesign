@@ -1,5 +1,5 @@
 import { useAppContext } from "./AppContext";
-import { auth, firestore, serverTimestamp } from "./firebase";
+import firebase, { auth, firestore, serverTimestamp } from "./firebase";
 
 export const getStoriesQuery = (subreddit, lastVisibe) => {
   let query = firestore.collection("posts");
@@ -60,7 +60,7 @@ export const fetchPostData = async (postId) => {
   }
 };
 
-export const submitPost = async (data,context) => {
+export const submitPost = async (data, context) => {
   try {
     if (!auth.currentUser) {
       alert("You need to login first...");
@@ -72,9 +72,27 @@ export const submitPost = async (data,context) => {
       authorId: auth.currentUser.uid,
       user: auth.currentUser.displayName,
       comment_count: 0,
+      upvotesBy: [],
     };
     await firestore.collection("posts").add(obj);
     alert("Post Successful");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const upvotePost = async (postId) => {
+  try {
+    await firestore
+      .collection("posts")
+      .doc(postId)
+      .update({
+        upvotesBy: firebase.firestore.FieldValue.arrayUnion(
+          auth.currentUser.uid
+        ),
+      });
+    alert("Post upvoted");
+    return true;
   } catch (error) {
     console.log(error.message);
   }

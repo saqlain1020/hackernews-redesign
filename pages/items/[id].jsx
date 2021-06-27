@@ -4,23 +4,34 @@ import Head from "next/head";
 import Comments from "../../components/Comments";
 import ChatIcon from "../../components/icons/chat";
 import GlobeIcon from "../../components/icons/globe";
+import UpIcon from "../../components/icons/up";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { fetchPostData } from "../api/posts";
+import { fetchPostData, upvotePost } from "../api/posts";
+import { auth } from "../api/firebase";
 
 export default function Best() {
   const { id } = useRouter().query;
   const [post, setPost] = React.useState({});
   const [comments, setComments] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [upvoted, setUpvoted] = React.useState(false);
+
+  const upvoteThisPost = async () => {
+    if (await upvotePost(post.id)) setUpvoted(true);
+  };
 
   const getData = async () => {
     setLoading(true);
+    setUpvoted(false);
     try {
       let { post, comments } = await fetchPostData(id);
-      console.log(post,comments)
+      console.log(post, comments);
       setComments(comments);
       setPost(post);
+      if (post?.upvotesBy?.includes(auth.currentUser.uid)) {
+        setUpvoted(true);
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -66,6 +77,15 @@ export default function Best() {
                   {post.comment_count || ""}
                 </figcaption>
               </figure>
+              {!upvoted && (
+                <span
+                  className="text-xs text-gray-500"
+                  style={{ display: "flex", cursor: "pointer",marginLeft:10, }}
+                  onClick={upvoteThisPost}
+                >
+                  Upvote
+                </span>
+              )}
             </div>
             <p className="text-md text-gray-700 mr-4" style={{ marginTop: 20 }}>
               {post.description}

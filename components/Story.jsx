@@ -16,7 +16,7 @@ export default function Story({ story }) {
       <div className="news-card flex flex-row font-inter">
         <div className="px-5 hidden lg:flex flex-col justify-center text-center w-20">
           <UpIcon />
-          <p className="text-gray-600 text-xs font-medium">{story.score}</p>
+          <p className="text-gray-600 text-xs font-medium">{story?.upvotesBy?.length}</p>
         </div>
         <div className="px-5">
           <h2 className="font-medium text-sm text-soft-black">{story.title}</h2>
